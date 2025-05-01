@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1",
+    "tiktok-live-connector": "^1.2.3",
+    "ws": "^8.18.1"
+  },
+  "name": "tiktok-tower-defense",
+  "version": "1.0.0",
+  "main": "indexscript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Файтинг</title>
+  <link rel="stylesheet" href="indexstyle.css" />
+</head>
+<body>
+  <div id="game-container">
+    <div id="player1" class="player"></div>
+    <div id="player2" class="player"></div>
+
+    <div id="hp1-container">
+      <div id="hp1"></div>
+      <div id="hp1-value" class="hp-value">100</div>
+    </div>
+
+    <div id="hp2-container">
+      <div id="hp2"></div>
+      <div id="hp2-value" class="hp-value">100</div>
+    </div>
+    <div id="players-1" class="players-container"></div>
+<div id="players-2" class="players-container"></div>
+<div id="likes-container1" class="likes-container"></div>
+<div id="likes-container2" class="likes-container"></div>
+<div id="countdown-timer" class="countdown-timer">
+  60
+</div>
+
+  </div>
+
+  <div class="controls">
+    <div class="innerControls">
+    <label>Скорость столкновений (уд/сек):</label>
+    <input type="number" id="speedInput" value="0.5" step="0.1" />
+    <button onclick="applySpeed()">Применить</button>
+  </div>
+    <div class="innerControls">
+    <label>Сила удара игрока 1:</label>
+    <input type="number" id="player1Attack" value="1" />
+    <button onclick="applyPlayer1Attack()">Применить</button>
+  </div>
+  <div class="innerControls">
+    <label>Сила удара игрока 2:</label>
+    <input type="number" id="player2Attack" value="1" />
+    <button onclick="applyPlayer2Attack()">Применить</button>
+  </div>
+    <div class="innerControls">
+    <button onclick="healPlayer1()">Пополнить HP игрока 1</button>
+    <button onclick="healPlayer2()">Пополнить HP игрока 2</button>
+  </div>
+    <div class="innerControls">
+<button onclick="startRound()">Старт раунда</button>
+<button onclick="endRound()">Конец раунда</button>
+</div>
+<div class="innerControls">
+<label>Макс HP:</label>
+<input type="number" id="maxHPInput" value="1000" step="100" />
+<button onclick="applyMaxHP()">Применить Max HP</button>
+</div>
+<!-- Поля для суперударов -->
+<div class="innerControls">
+<label>Сила суперудара игрока 1:</label>
+<input type="number" id="player1SuperAttack" value="50" />
+<button onclick="applySuperAttack(1)">Суперудар игрока 1</button>
+</div>
+<div class="innerControls"></div>
+<label>Сила суперудара игрока 2:</label>
+<input type="number" id="player2SuperAttack" value="50" />
+<button onclick="applySuperAttack(2)">Суперудар игрока 2</button>
+<button onclick="resetMonsters()">Сбросить монстров</button>
+</div>
+
+  </div>
+
+  <script src="indexscript.js"></script>
+</body>
+</html>

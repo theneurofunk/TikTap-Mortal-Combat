@@ -1,0 +1,245 @@
+body {
+  font-family: sans-serif;
+  background-color: #f5f5f5;
+}
+
+#game-container {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  background-color: #e0e0e0;
+  background-image: url('field.png'); /* Добавьте свой фон */
+  background-size: cover;
+  margin: 20px auto;
+  overflow: hidden;
+  border: 2px solid #000;
+}
+
+/* Игроки */
+.player {
+  position: absolute;
+  width: 200px;
+  height: 300px;
+  top: 150px;
+}
+
+#player1 {
+  left: 50px;
+  background-size: 70%;
+  background-repeat: no-repeat;
+}
+
+#player2 {
+  left: 250px;
+  background-size: 70%;
+  background-repeat: no-repeat;
+  transform: scaleX(-1);
+}
+
+.countdown-timer {
+  position: absolute;
+  top: 10px;
+  left: 252px;
+  transform: translateX(-50%);
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 15px;
+  border-radius: 50%;
+  z-index: 1000;
+  display: none;
+  transition: opacity 0.3s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.8; /* важно для анимации */
+}
+
+/* Контейнеры HP */
+#hp1-container,
+#hp2-container {
+  position: absolute;
+  top: 10px;
+  width: 200px;
+  height: 20px;
+  border: 2px solid #000;
+  box-shadow: 5px 5px 5px black;
+  background-color: #444;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#hp1-container {
+  left: 10px;
+}
+
+#hp2-container {
+  right: 10px;
+}
+
+/* HP-полосы */
+#hp1 {
+  height: 100%;
+  background-color: red;
+  transition: width 0.3s ease;
+  float: left;
+}
+
+#hp2 {
+  height: 100%;
+  background-color: red;
+  transition: width 0.3s ease;
+  float: right;
+}
+
+#hp1-value {
+  left: 5px; /* ближе к центру */
+}
+
+#hp2-value {
+  right: 5px; /* ближе к центру */
+}
+
+.hp-value {
+  position: absolute;
+  top: 1px;
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+  z-index: 11;
+}
+
+/* Панель управления */
+.controls {
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+
+  margin: 20px auto;
+  overflow: hidden;
+  border: 2px solid #000;
+}
+
+.controlsControls {
+  margin-top: 5px;
+  width: 300px;
+}
+
+.controls input {
+  width: 100px;
+  padding: 5px;
+  margin: 5px;
+}
+
+.likes-container {
+  position: absolute;
+  top: 40px;
+  display: flex;
+  gap: 0px; /* убираем отступ */
+  flex-direction: column;
+}
+
+#likes-container1 {
+  left: 10px;
+}
+
+#likes-container2 {
+  right: 40px;
+}
+
+.avatar-like {
+  width: 20px;
+  height: 20px;
+  margin-left: -15px; /* перекрытие слева */
+  border-radius: 50%;
+  border: 1px solid black;
+  object-fit: cover;
+  z-index: 1;
+  transition: transform 0.2s ease;
+  position: relative;
+  left: 20px;
+}
+
+.avatar-like:hover {
+  transform: scale(1.2); /* Увеличение при наведении */
+  z-index: 10; /* Наверх остальных */
+}
+
+.avatar-like {
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Контейнер для аватара и имени */
+.avatar-like-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nickname {
+  font-size: 12px;
+  position: relative;
+  left: 25px;
+  color: white;
+  font-weight: bold;
+}
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-avatar {
+  width: 20px; /* Устанавливаем размер аватарки */
+  height: 20px;
+  border-radius: 50%; /* Круглая форма */
+  margin-right: 10px;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.team-1 {
+  /* Стили для команды 1 */
+  top: 1px;
+  color: white;
+}
+
+.team-2 {
+  /* Стили для команды 2 */
+  top: 1px;
+}
+
+.user-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+}
+
+

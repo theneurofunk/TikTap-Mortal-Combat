@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Управление параметрами</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .control-group {
+      margin-bottom: 10px;
+    }
+
+    #field {
+      width: 500px;
+      height: 500px;
+      position: relative;
+      background-image: 
+        linear-gradient(to right, #ccc 1px, transparent 1px),
+        linear-gradient(to bottom, #ccc 1px, transparent 1px);
+      background-size: 5px 5px;
+      border: 1px solid #333;
+      overflow: hidden;
+    }
+
+    #road {
+      position: absolute;
+      top: 225px;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: yellow;
+      z-index: 1;
+    }
+
+    #shooter {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+      background-image: url("logo2.png");
+      top: 175px;
+      left: 245px;
+      z-index: 3;
+    }
+
+    #block {
+      width: 20px;
+      height: 20px;
+      background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+      background-image: url("logo1.png");
+      position: absolute;
+      top: 240px;
+      z-index: 2;
+    }
+
+    .projectile {
+      position: absolute;
+      background-color: blue;
+      z-index: 4;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    button {
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <div class="control-group">
+    <label>Скорость квадрата:</label>
+    <input type="number" id="speedInput" value="100" min="1">
+    <button id="applySpeed">Подтвердить</button>
+  </div>
+
+  <div class="control-group">
+    <label>Скорость снаряда:</label>
+    <input type="number" id="bulletSpeedInput" value="5" min="1">
+    <button id="applyBulletSpeed">Подтвердить</button>
+  </div>
+
+  <div class="control-group">
+    <label>Сила снаряда:</label>
+    <input type="number" id="bulletPowerInput" value="15" min="1">
+    <button id="applyBulletPower">Подтвердить</button>
+  </div>
+
+  <div class="control-group">
+    <label>Частота стрельбы (мс):</label>
+    <input type="number" id="shootRateInput" value="300" min="100">
+    <button id="applyShootRate">Подтвердить</button>
+  </div>
+
+  <div class="control-group">
+    <label>Радиус поражения:</label>
+    <input type="number" id="rangeInput" value="150" min="1">
+    <button id="applyRange">Подтвердить</button>
+  </div>
+</div>
+
+<div id="field">
+  <div id="road"></div>
+  <div id="shooter"></div>
+  <div id="block"></div>
+</div>
+
+<div class="control-group">
+    <label>Хитпоинты квадрата:</label>
+    <span id="hpDisplay">–</span>
+</div>
+
+<script>
+  const block = document.getElementById('block');
+  const shooter = document.getElementById('shooter');
+  const field = document.getElementById('field');
+  const hpDisplay = document.getElementById('hpDisplay');
+
+  const speedInput = document.getElementById('speedInput');
+  const bulletSpeedInput = document.getElementById('bulletSpeedInput');
+  const bulletPowerInput = document.getElementById('bulletPowerInput');
+  const shootRateInput = document.getElementById('shootRateInput');
+  const rangeInput = document.getElementById('rangeInput');
+
+  const applySpeedBtn = document.getElementById('applySpeed');
+  const applyBulletSpeedBtn = document.getElementById('applyBulletSpeed');
+  const applyBulletPowerBtn = document.getElementById('applyBulletPower');
+  const applyShootRateBtn = document.getElementById('applyShootRate');
+  const applyRangeBtn = document.getElementById('applyRange');
+
+  const fieldWidth = 500;
+  const blockSize = 20;
+  const padding = 10;
+  const shooterX = 245; // Расположение пушки
+
+  let x = fieldWidth - blockSize - padding;
+  let moveInterval;
+  let shootInterval;
+
+  let moveSpeed = parseInt(speedInput.value);
+  let bulletSpeed = parseInt(bulletSpeedInput.value);
+  let bulletPower = parseInt(bulletPowerInput.value);
+  let shootRate = parseInt(shootRateInput.value);
+  let shootingRange = parseInt(rangeInput.value);
+
+  let maxHP = 100;
+  let blockHP = maxHP;
+
+  function updateHPDisplay() {
+    hpDisplay.textContent = `${blockHP} / ${maxHP}`;
+  }
+
+  function resetBlock() {
+    blockHP = maxHP;
+    x = fieldWidth - blockSize - padding;
+    updateHPDisplay();
+  }
+
+  function startMovingBlock() {
+    clearInterval(moveInterval);
+    const delay = 1000 / moveSpeed;
+    moveInterval = setInterval(() => {
+      x -= 1;
+      if (x < padding) x = fieldWidth - blockSize - padding;
+      block.style.left = `${x}px`;
+    }, delay);
+  }
+
+  function shootProjectile() {
+    const projectile = document.createElement('div');
+    projectile.className = 'projectile';
+    field.appendChild(projectile);
+
+    let px = shooterX + 5 - bulletPower / 2;
+    let py = 175 + 5 - bulletPower / 2;
+
+    projectile.style.width = `${bulletPower}px`;
+    projectile.style.height = `${bulletPower}px`;
+    projectile.style.left = `${px}px`;
+    projectile.style.top = `${py}px`;
+
+    function animate() {
+      const targetX = x + blockSize / 2;
+      const targetY = 240 + blockSize / 2;
+      let dx = targetX - px;
+      let dy = targetY - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Проверка на попадание в радиус поражения
+      const distFromShooter = Math.sqrt((shooterX - targetX) ** 2 + (175 - targetY) ** 2);
+      if (distFromShooter > shootingRange) {
+        return; // Не стреляем, если монстр слишком далеко
+      }
+
+      if (dist < bulletSpeed) {
+        projectile.remove();
+        blockHP -= bulletPower;
+        if (blockHP <= 0) {
+          resetBlock();
+        }
+        updateHPDisplay();
+        return;
+      }
+
+      dx /= dist;
+      dy /= dist;
+      px += dx * bulletSpeed;
+      py += dy * bulletSpeed;
+      projectile.style.left = `${px}px`;
+      projectile.style.top = `${py}px`;
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  function startShooting() {
+    clearInterval(shootInterval);
+    shootInterval = setInterval(shootProjectile, shootRate);
+  }
+
+  // Инициализация
+  resetBlock();
+  startMovingBlock();
+  startShooting();
+
+  // Обработчики кнопок
+  applySpeedBtn.addEventListener('click', () => {
+    const val = parseInt(speedInput.value);
+    if (val > 0) {
+      moveSpeed = val;
+      startMovingBlock();
+    }
+  });
+
+  applyBulletSpeedBtn.addEventListener('click', () => {
+    const val = parseInt(bulletSpeedInput.value);
+    if (val > 0) bulletSpeed = val;
+  });
+
+  applyBulletPowerBtn.addEventListener('click', () => {
+    const val = parseInt(bulletPowerInput.value);
+    if (val > 0) bulletPower = val;
+  });
+
+  applyShootRateBtn.addEventListener('click', () => {
+    const val = parseInt(shootRateInput.value);
+    if (val > 50) {
+      shootRate = val;
+      startShooting();
+    }
+  });
+
+  applyRangeBtn.addEventListener('click', () => {
+    const val = parseInt(rangeInput.value);
+    if (val > 0) {
+      shootingRange = val;
+    }
+  });
+</script>
+
+</body>
+</html>
