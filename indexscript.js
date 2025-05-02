@@ -149,7 +149,7 @@ function movePlayers() {
     collisionCooldown = true;
     direction = 0;
 
-let recoil = 30, step = 0;
+let recoil = 60, step = 0;
 
 // 🔽 Сначала сближение
 const advanceInterval = setInterval(() => {
