@@ -149,41 +149,41 @@ function movePlayers() {
     collisionCooldown = true;
     direction = 0;
 
-    let recoil = 980, step = 0;
+let recoil = 30, step = 0;
 
-    // 🔽 Сначала сближение
-    const advanceInterval = setInterval(() => {
+// 🔽 Сначала сближение
+const advanceInterval = setInterval(() => {
+  if (step < recoil) {
+    if (p1Left + 1 + 200 <= 500) p1Left += 1;
+    if (p2Left - 1 >= 0) p2Left -= 1;
+
+    player1.style.left = p1Left + 'px';
+    player2.style.left = p2Left + 'px';
+    step++;
+  } else {
+    clearInterval(advanceInterval);
+    step = 0;
+
+    // 🔼 Потом отталкивание
+    const recoilInterval = setInterval(() => {
       if (step < recoil) {
-        if (p1Left + 1 + 200 <= 500) p1Left += 1;
-        if (p2Left - 1 >= 0) p2Left -= 1;
-    
+        if (p1Left - 1 >= 0) p1Left -= 1;
+        if (p2Left + 1 + 200 <= 500) p2Left += 1;
+
         player1.style.left = p1Left + 'px';
         player2.style.left = p2Left + 'px';
         step++;
       } else {
-        clearInterval(advanceInterval);
-        step = 0;
-    
-        // 🔼 Потом отталкивание
-        const recoilInterval = setInterval(() => {
-          if (step < recoil) {
-            if (p1Left - 1 >= 0) p1Left -= 1;
-            if (p2Left + 1 + 200 <= 500) p2Left += 1;
-    
-            player1.style.left = p1Left + 'px';
-            player2.style.left = p2Left + 'px';
-            step++;
-          } else {
-            clearInterval(recoilInterval);
-            setTimeout(() => {
-              direction = 1;
-              collisionCooldown = false;
-              if (roundActive) movePlayers();
-            }, collisionSpeed * 1000);
-          }
-        }, 10);
+        clearInterval(recoilInterval);
+        setTimeout(() => {
+          direction = 1;
+          collisionCooldown = false;
+          if (roundActive) movePlayers();
+        }, collisionSpeed * 1000);
       }
     }, 10);
+  }
+}, 10);
     return; // прекратить цикл до recoil
   }
 
@@ -238,7 +238,7 @@ function applySuperAttack(player) {
   updateHP();
 }
 
-let countdown = 980; // Время раунда в секундах
+let countdown = 970; // Время раунда в секундах
 let countdownInterval = null;
 
 function startCountdown() {
@@ -298,7 +298,7 @@ function startCountdown() {
 function stopCountdown() {
   clearInterval(countdownInterval);
   document.getElementById("countdown-timer").style.display = "none";
-  countdown = 20; // сбросим на след. раунд
+  countdown = 970; // сбросим на след. раунд
 }
 
 
