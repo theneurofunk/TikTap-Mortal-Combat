@@ -149,7 +149,7 @@ function movePlayers() {
     collisionCooldown = true;
     direction = 0;
 
-    let recoil = 990, step = 0;
+    let recoil = 980, step = 0;
 
     // 🔽 Сначала сближение
     const advanceInterval = setInterval(() => {
@@ -238,7 +238,7 @@ function applySuperAttack(player) {
   updateHP();
 }
 
-let countdown = 990; // Время раунда в секундах
+let countdown = 980; // Время раунда в секундах
 let countdownInterval = null;
 
 function startCountdown() {
