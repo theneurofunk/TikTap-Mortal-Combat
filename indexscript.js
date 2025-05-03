@@ -369,6 +369,24 @@ function addPlayerToTeam(userId, user, team) {
   teamContainer.appendChild(playerDiv);
 }
 
+function displayMessage(team, userNickname, likeCount) {
+  const messageContainer = team === 1 ? document.getElementById('message-container1') : document.getElementById('message-container2');
+
+  // Создаём новый div для сообщения
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message');
+  messageDiv.textContent = `${userNickname} пополнил ХП на ${likeCount}`;
+
+  // Добавляем сообщение в контейнер
+  messageContainer.appendChild(messageDiv);
+
+  // Удаляем сообщение через 1 секунду
+  setTimeout(() => {
+    messageDiv.remove();
+  }, 2000);
+}
+
+
 
 function resetMonsters() {
   const effect = document.createElement("div");
@@ -459,7 +477,7 @@ socket.onmessage = (event) => {
   if (data.type === 'like') {
     const match = data.message.match(/(\d+)\s+лайк/);
     const likeCount = match ? parseInt(match[1]) : 1;
-
+  
     // Увеличиваем ХП соответствующей команде
     if (team === 1) {
       hp1 = Math.min(hp1 + likeCount, maxHP);
@@ -469,25 +487,43 @@ socket.onmessage = (event) => {
       console.log(`Пользователь ${user.nickname} из команды 2 пополнил ХП на ${likeCount} (Текущее ХП: ${hp2})`);
     }
     updateHP();
-
+  
     spawnAvatarLike(user.profilePictureUrl, team, user.nickname); // передаем nickname
-  }
-
-  if (data.type === 'chat') {
-    const message = data.message.toLowerCase();
-    console.log(`[CHAT] Сообщение от ${userId} — команда ${team}:`, message);
-
-    // Немного лечим игрока по команде
-    if (team === 1) {
-      hp1 = Math.min(hp1 + 5, maxHP);
-    } else {
-      hp2 = Math.min(hp2 + 5, maxHP);
+  
+    // Выводим сообщение о пополнении ХП
+    displayMessage(team, user.nickname, likeCount);
+  
+    const db = firebase.database();
+    const usersRef = db.ref("users");
+    
+    if (!user.id || !user.nickname || !user.uniqueId) {
+      console.warn('Ошибка: отсутствуют обязательные данные', user);
+      return;
     }
-    updateHP();
-
-    // Если сообщение содержит ключевое слово "монстр"
-
+    
+    usersRef.once("value", (snapshot) => {
+      let users = snapshot.val() || [];
+    
+      // Ищем пользователя по user.id
+      let userIndex = users.findIndex(u => u.userId === user.id);
+    
+      if (userIndex !== -1) {
+        users[userIndex].likes += likeCount;
+      } else {
+        users.push({
+          id: users.length > 0 ? users[users.length - 1].id + 1 : 0,
+          userId: user.id,           // ID из TikTok (userId)
+          uniqueId: user.uniqueId,   // Юзернейм из TikTok
+          username: user.nickname,   // Отображаемое имя
+          likes: likeCount
+        });
+      }
+    
+      usersRef.set(users);
+    });
   }
+  
+
 
   if (data.type === 'chat') {
     const message = data.message.toLowerCase();
